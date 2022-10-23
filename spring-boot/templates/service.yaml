@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.application.name }}-svc"
+  namespace: {{ .Values.application.namespace }}
+  labels:
+    {{- include "spring-boot.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      {{- if eq "NodePort" .Values.service.type }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "spring-boot.selectorLabels" . | nindent 4 }}
